@@ -4,7 +4,7 @@
 import logging
 import operator
 
-from odoo import _, api, fields, models, tools
+from odoo import api, fields, models, tools
 from odoo.exceptions import ValidationError
 from odoo.tools.misc import formatLang
 
@@ -85,21 +85,19 @@ class FinancialStatementEU(models.Model):
                 p = ""
             line.complete_name = f"[{line.code}] {p}{line.name}"
 
-    def name_get(self):
-        res = []
-        for line in self:
-            res.append((line.id, line.complete_name))
-        return res
-
     @api.constrains("code", "zone_bal")
     def _check_code_zone(self):
         for line in self:
             if (line.zone_bal == "PA") and (not line.code.startswith("PA")):
-                raise ValidationError(_("ASSETS codes must starting by PA"))
+                raise ValidationError(self.env._("ASSETS codes must starting by PA"))
             elif (line.zone_bal == "PP") and (not line.code.startswith("PP")):
-                raise ValidationError(_("LIABILITIES codes must starting by PP"))
+                raise ValidationError(
+                    self.env._("LIABILITIES codes must starting by PP")
+                )
             elif (line.zone_bal == "EC") and (not line.code.startswith("E")):
-                raise ValidationError(_("INCOME STATEMENT codes must starting by E"))
+                raise ValidationError(
+                    self.env._("INCOME STATEMENT codes must starting by E")
+                )
 
     @api.model
     def financial_statement_eu_account_association(
@@ -109,7 +107,9 @@ class FinancialStatementEU(models.Model):
         credit_fse_id,
         force_update,
     ):
-        for company in self.env["res.company"].search([]):
+        # All companies: accounts are shared, the association must reach each one
+        companies = self.env["res.company"].search([])  # pylint: disable=no-search-all
+        for company in companies:
             acc_ids = (
                 self.env["account.account"]
                 .with_company(company)
@@ -227,102 +227,66 @@ class FinancialStatementEU(models.Model):
         domain = []
         domain.append(("company_ids", "in", company_id))
         self.add_calc_type_domain(domain, calc_type, financial_statement_eu_id)
-        acc_model = self.env["account.account"]
-        account_ids = acc_model.read_group(
-            domain,
-            fields=[
-                "id",
-                "code",
-                "name",
-                "financial_statement_eu_debit_id",
-                "financial_statement_eu_credit_id",
-            ],
-            groupby=[
-                "id",
-                "code",
-                "name",
-                "financial_statement_eu_debit_id",
-                "financial_statement_eu_credit_id",
-            ],
-            orderby="code",
-            lazy=False,
-        )
-        if account_ids:
-            for item in account_ids:
-                account_id = False
-                for d in item.get("__domain"):
-                    if type(d) is tuple and d[0] == "id":
-                        account_id = d[2]
-                if account_id:
-                    acc_credit_id = item.get("financial_statement_eu_credit_id")
-                    acc_debit_id = item.get("financial_statement_eu_debit_id")
-                    domain = []
-                    domain.append(("company_id", "=", company_id))
-                    domain.append(("account_id", "=", account_id))
-                    domain.append(("date", ">=", date_from))
-                    domain.append(("date", "<=", date_to))
-                    if only_posted_move:
-                        domain.append(("move_id.state", "=", "posted"))
-                    if ignore_closing_move:
-                        domain.append(("move_id.closing_type", "!=", "closing"))
-                        domain.append(("move_id.closing_type", "!=", "loss_profit"))
-                    aml_model = self.env["account.move.line"]
-                    amls = aml_model.read_group(
-                        domain,
-                        ["debit", "credit", "account_id"],
-                        ["account_id"],
-                        lazy=False,
-                    )
-                    if amls:
-                        for line in amls:
-                            acc_amount = tools.float_round(
-                                line.get("debit") - line.get("credit"),
-                                currency_precision,
+        accounts = self.env["account.account"].search(domain, order="code")
+        aml_model = self.env["account.move.line"]
+        for account in accounts:
+            acc_credit_id = account.financial_statement_eu_credit_id
+            acc_debit_id = account.financial_statement_eu_debit_id
+            domain = [
+                ("company_id", "=", company_id),
+                ("account_id", "=", account.id),
+                ("date", ">=", date_from),
+                ("date", "<=", date_to),
+            ]
+            if only_posted_move:
+                domain.append(("move_id.state", "=", "posted"))
+            if ignore_closing_move:
+                domain.append(("move_id.closing_type", "!=", "closing"))
+                domain.append(("move_id.closing_type", "!=", "loss_profit"))
+            amls = aml_model._read_group(
+                domain, groupby=["account_id"], aggregates=["debit:sum", "credit:sum"]
+            )
+            if amls:
+                for _account, debit, credit in amls:
+                    acc_amount = tools.float_round(debit - credit, currency_precision)
+                    if (
+                        (calc_type == "non_assoc")
+                        or (
+                            (calc_type == "d")  # debit
+                            and (
+                                (currency_id.compare_amounts(acc_amount, 0) >= 0)
+                                or (not acc_credit_id)
                             )
-                            if (
-                                (calc_type == "non_assoc")
-                                or (
-                                    (calc_type == "d")  # debit
-                                    and (
-                                        (
-                                            currency_id.compare_amounts(acc_amount, 0)
-                                            >= 0
-                                        )
-                                        or (not acc_credit_id)
-                                    )
-                                )
-                                or (
-                                    (calc_type == "c")  # credit
-                                    and (
-                                        (
-                                            currency_id.compare_amounts(acc_amount, 0)
-                                            == -1
-                                        )
-                                        or (not acc_debit_id)
-                                    )
-                                )
-                            ):
-                                if sign_display == "-":
-                                    acc_amount = -acc_amount
-                                financial_statement_line_amount = (
-                                    financial_statement_line_amount + acc_amount
-                                )
-                                if (not hide_acc_amount_0) or (acc_amount != 0):
-                                    account_list.append(
-                                        {
-                                            "code": item.get("code"),
-                                            "desc": item.get("name"),
-                                            "amount": acc_amount,
-                                        }
-                                    )
-                    elif not hide_acc_amount_0:
-                        account_list.append(
-                            {
-                                "code": item.get("code"),
-                                "desc": item.get("name"),
-                                "amount": 0,
-                            }
                         )
+                        or (
+                            (calc_type == "c")  # credit
+                            and (
+                                (currency_id.compare_amounts(acc_amount, 0) == -1)
+                                or (not acc_debit_id)
+                            )
+                        )
+                    ):
+                        if sign_display == "-":
+                            acc_amount = -acc_amount
+                        financial_statement_line_amount = (
+                            financial_statement_line_amount + acc_amount
+                        )
+                        if (not hide_acc_amount_0) or (acc_amount != 0):
+                            account_list.append(
+                                {
+                                    "code": account.code,
+                                    "desc": account.name,
+                                    "amount": acc_amount,
+                                }
+                            )
+            elif not hide_acc_amount_0:
+                account_list.append(
+                    {
+                        "code": account.code,
+                        "desc": account.name,
+                        "amount": 0,
+                    }
+                )
         return financial_statement_line_amount
 
     def round_bal_val(self, val, precision):
@@ -345,7 +309,8 @@ class FinancialStatementEU(models.Model):
         if ignore_closing_move:
             if not self.env["account.move"].fields_get(allfields=["closing_type"]):
                 ignore_closing_move = False
-        financial_statement_eu_ids = self.search([])  # env["financial.statement.eu"].
+        # Every line of the statement is computed, the whole tree is needed
+        financial_statement_eu_ids = self.search([])  # pylint: disable=no-search-all
         for item in financial_statement_eu_ids:
             financial_statement_eu_amount = 0
             account_list = []
@@ -481,7 +446,7 @@ class FinancialStatementEU(models.Model):
                         )
         if acc_ignore != "":
             log_warnings += (
-                _("There are accounts to ignore but with non-zero amount:")
+                self.env._("There are accounts to ignore but with non-zero amount:")
                 + "\n"
                 + acc_ignore
             )
@@ -511,39 +476,37 @@ class FinancialStatementEU(models.Model):
             != financial_statement_eu_lines["PP"]["rounded_amount"]
         ):
             financial_statement_state = "UNBALANCED"
-            log_warnings = log_warnings + (
-                _(
-                    "Unbalanced financial statements: "
-                    "%(tot_assets)s (Assets) - %(tot_liabilities)s (Liabilities)"
-                    " = %(diff)s"
-                )
-                % {
-                    "tot_assets": formatLang(
-                        self.env,
-                        financial_statement_eu_lines["PA"]["rounded_amount"],
-                        currency_obj=currency_id,
+            log_warnings = log_warnings + self.env._(
+                "Unbalanced financial statements: "
+                "%(tot_assets)s (Assets) - %(tot_liabilities)s (Liabilities)"
+                " = %(diff)s",
+                tot_assets=formatLang(
+                    self.env,
+                    financial_statement_eu_lines["PA"]["rounded_amount"],
+                    currency_obj=currency_id,
+                ),
+                tot_liabilities=formatLang(
+                    self.env,
+                    financial_statement_eu_lines["PP"]["rounded_amount"],
+                    currency_obj=currency_id,
+                ),
+                diff=formatLang(
+                    self.env,
+                    tools.float_round(
+                        financial_statement_eu_lines["PA"]["rounded_amount"]
+                        - financial_statement_eu_lines["PP"]["rounded_amount"],
+                        2,
                     ),
-                    "tot_liabilities": formatLang(
-                        self.env,
-                        financial_statement_eu_lines["PP"]["rounded_amount"],
-                        currency_obj=currency_id,
-                    ),
-                    "diff": formatLang(
-                        self.env,
-                        tools.float_round(
-                            financial_statement_eu_lines["PA"]["rounded_amount"]
-                            - financial_statement_eu_lines["PP"]["rounded_amount"],
-                            2,
-                        ),
-                        currency_obj=currency_id,
-                    ),
-                }
+                    currency_obj=currency_id,
+                ),
             )
         if len(unlinked_account) > 0:
             financial_statement_state = "UNLINKED_ACCOUNTS"
             log_warnings += (
                 "\n"
-                + _("There are accounts not linked to any financial statement line:")
+                + self.env._(
+                    "There are accounts not linked to any financial statement line:"
+                )
                 + "\n"
             )
 

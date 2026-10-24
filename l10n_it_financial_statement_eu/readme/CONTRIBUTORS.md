@@ -2,3 +2,4 @@
 - Bellomi Luca (analisi/supporto) \<<https://github.com/mktsrl>\>
 - Allegretti Daniele (analisi/supervisione/consulenza)
   \<<https://www.mkt.it/>\>
+- Luca Orioli \<<lucaorioli@gmail.com>\>

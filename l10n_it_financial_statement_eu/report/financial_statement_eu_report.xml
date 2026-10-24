@@ -18,7 +18,7 @@
                 <t t-if="len(warnings)>0">
                     <div class="warnings">
                         <t t-foreach="warnings" t-as="msg">
-                            <t t-esc="msg" />
+                            <t t-out="msg" />
                             <br />
                         </t>
                         <t t-if="len(unlinked_account)>0">
@@ -26,14 +26,14 @@
                                 <t t-foreach="unlinked_account" t-as="acc">
                                     <tr class="account_row">
                                         <td>
-                                            <span t-esc="acc['code']" />
+                                            <span t-out="acc['code']" />
                                         </td>
                                         <td>
-                                            <span t-esc="acc['desc']" />
+                                            <span t-out="acc['desc']" />
                                         </td>
                                         <td style="text-align: right">
                                             <span
-                                                t-esc="acc['amount']"
+                                                t-out="acc['amount']"
                                                 t-options='{"widget": "float", "precision": 2}'
                                             />
                                         </td>
@@ -47,39 +47,39 @@
 
                 <div>
                     <h2>
-                        <t t-esc="form_data['company_name']" />
+                        <t t-out="form_data['company_name']" />
                     </h2>
                     <h6>
-                        <t t-esc="form_data['address']" />
+                        <t t-out="form_data['address']" />
                         -
-                        <t t-esc="form_data['city']" />
+                        <t t-out="form_data['city']" />
                         <br />
                         Taxcode
-                        <t t-esc="form_data['vat_code_nation']" />
-                        <t t-esc="form_data['vat_code']" />
+                        <t t-out="form_data['vat_code_nation']" />
+                        <t t-out="form_data['vat_code']" />
                         - Fiscal Code
-                        <t t-esc="form_data['fiscalcode']" />
+                        <t t-out="form_data['fiscalcode']" />
                         <br />
                         Share capital Euro
-                        <t t-esc="form_data['l10n_it_eco_index_share_capital']" />
-                        - REA: <t t-esc="form_data['l10n_it_eco_index_office']" />-<t
-                        t-esc="form_data['l10n_it_eco_index_number']"
+                        <t t-out="form_data['l10n_it_eco_index_share_capital']" />
+                        - REA: <t t-out="form_data['l10n_it_eco_index_office']" />-<t
+                        t-out="form_data['l10n_it_eco_index_number']"
                     />
                     </h6>
                     <br />
                     <br />
                     <h3>
-                        <t t-esc="form_data['name']" />
+                        <t t-out="form_data['name']" />
                     </h3>
                     <div class="period">
                         from
                         <t
-                        t-esc="form_data['date_from']"
+                        t-out="form_data['date_from']"
                         t-options='{"widget": "date","format": "dd/MM/yyyy"}'
                     />
                         to
                         <t
-                        t-esc="form_data['date_to']"
+                        t-out="form_data['date_to']"
                         t-options='{"widget": "date","format": "dd/MM/yyyy"}'
                     />
                     </div>
@@ -88,13 +88,13 @@
                     <t t-foreach="financial_statement_eu_lines" t-as="line">
                         <tr>
                             <td>
-                                <span t-esc="line['code']" />
+                                <span t-out="line['code']" />
                             </td>
                             <td>
                                 <t t-foreach="range(len(line['code'])-3)" t-as="c">
                                     <![CDATA[&emsp;]]>
                                 </t>
-                                <span t-esc="line['desc']" />
+                                <span t-out="line['desc']" />
                             </td>
                             <td style="text-align: right">
                                 <t t-if="line['code']=='E'">
@@ -102,13 +102,13 @@
                                 </t>
                                 <t t-elif="form_data['values_precision']=='d'">
                                     <span
-                                        t-esc="line['amount']"
+                                        t-out="line['amount']"
                                         t-options='{"widget": "float", "precision": 2}'
                                     />
                                 </t>
                                 <t t-else="">
                                     <span
-                                        t-esc="line['amount']"
+                                        t-out="line['amount']"
                                         t-options='{"widget": "float", "precision": 0}'
                                     />
                                 </t>
@@ -117,14 +117,14 @@
                         <t t-foreach="line['accounts']" t-as="acc">
                             <tr class="account_row account_row_background">
                                 <td>
-                                    <span t-esc="acc['code']" />
+                                    <span t-out="acc['code']" />
                                 </td>
                                 <td>
-                                    <span t-esc="acc['desc']" />
+                                    <span t-out="acc['desc']" />
                                 </td>
                                 <td style="text-align: right">
                                     <span
-                                        t-esc="acc['amount']"
+                                        t-out="acc['amount']"
                                         t-options='{"widget": "float", "precision": 2}'
                                     />
                                 </td>
