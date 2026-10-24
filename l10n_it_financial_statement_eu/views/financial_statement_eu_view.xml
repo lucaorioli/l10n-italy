@@ -15,6 +15,9 @@
                     <field name="tag_xbrl" />
                     <field name="sign_calculation" />
                     <field name="sign_display" />
+                    <field name="ordinary" />
+                    <field name="abbreviated" />
+                    <field name="sum_codes" invisible="not sum_codes" />
                     <field
                         name="parent_id"
                         widget="selection"

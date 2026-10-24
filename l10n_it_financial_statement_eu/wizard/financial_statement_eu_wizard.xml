@@ -13,6 +13,7 @@
                             <field name="date_to" />
                         </group>
                         <group>
+                            <field name="schema" />
                             <field name="values_precision" />
                             <field name="hide_acc_amount_0" />
                             <field name="only_posted_move" />

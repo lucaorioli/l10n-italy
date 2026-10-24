@@ -599,3 +599,58 @@ msgstr "o"
 #, python-format
 msgid "to"
 msgstr "al"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__abbreviated
+msgid "Abbreviated schema"
+msgstr "Schema abbreviato"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu__abbreviated
+msgid "Line of the abbreviated financial statements (art. 2435-bis c.c.)"
+msgstr "Voce del bilancio in forma abbreviata (art. 2435-bis c.c.)"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__ordinary
+msgid "Ordinary schema"
+msgstr "Schema ordinario"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu__ordinary
+msgid "Line of the ordinary financial statements (art. 2424-2425 c.c.)"
+msgstr "Voce del bilancio ordinario (artt. 2424-2425 c.c.)"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__sum_codes
+msgid "Sum of lines"
+msgstr "Somma delle voci"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu__sum_codes
+msgid ""
+"Comma separated codes of the lines summed by a line of the "
+"abbreviated schema only, such as receivables due within the next year"
+msgstr ""
+"Codici, separati da virgola, delle voci sommate da una voce del solo "
+"schema abbreviato, come i crediti esigibili entro l'esercizio "
+"successivo"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__schema
+msgid "Schema"
+msgstr "Schema"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__schema__ordinary
+msgid "Ordinary (art. 2424-2425 c.c.)"
+msgstr "Ordinario (artt. 2424-2425 c.c.)"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__schema__abbreviated
+msgid "Abbreviated (art. 2435-bis c.c.)"
+msgstr "Abbreviato (art. 2435-bis c.c.)"
+
+#. module: l10n_it_financial_statement_eu
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_wizard.py:0
+msgid "(abbreviated)"
+msgstr "(abbreviato)"

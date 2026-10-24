@@ -47,6 +47,14 @@ class CreateFinancialStatementWizard(models.TransientModel):
         required=True,
         default=lambda self: self._default_date_to(),
     )
+    schema = fields.Selection(
+        [
+            ("ordinary", "Ordinary (art. 2424-2425 c.c.)"),
+            ("abbreviated", "Abbreviated (art. 2435-bis c.c.)"),
+        ],
+        default="ordinary",
+        required=True,
+    )
     values_precision = fields.Selection(
         [
             ("d", "2 decimals Euro"),
@@ -106,7 +114,7 @@ class CreateFinancialStatementWizard(models.TransientModel):
             self.date_from = date_range.date_start
             self.date_to = date_range.date_end
 
-    @api.depends("date_range_id", "date_to", "date_from")
+    @api.depends("date_range_id", "date_to", "date_from", "schema")
     def _compute_period_data(self):
         for fs in self:
             fs.year = fs.date_to.year
@@ -115,6 +123,8 @@ class CreateFinancialStatementWizard(models.TransientModel):
                 fs.name = fs.name + " " + str(fs.date_from.month) + "-" + str(fs.year)
             else:
                 fs.name = fs.name + " " + str(fs.year)
+            if fs.schema == "abbreviated":
+                fs.name += " " + self.env._("(abbreviated)")
 
     def get_data(self):
         self.company_id = self.env.company

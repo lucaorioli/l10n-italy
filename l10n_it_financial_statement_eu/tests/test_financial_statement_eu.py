@@ -16,7 +16,9 @@ class TestFinancialStatementEU(TransactionCase):
         # add env on cls and many other things
         super().setUp()
 
-    def _find_or_create_account_account(self, company_id, code, name, code_fs_eu):
+    def _find_or_create_account_account(
+        self, company_id, code, name, code_fs_eu, account_type="income_other"
+    ):
         acc_id = self.env["account.account"].search(
             [("company_ids", "in", company_id), ("code", "=", code)]
         )
@@ -25,8 +27,9 @@ class TestFinancialStatementEU(TransactionCase):
                 {
                     "code": code,
                     "name": name,
-                    "account_type": "income_other",
-                    "reconcile": True,
+                    "account_type": account_type,
+                    "reconcile": account_type
+                    in ("income_other", "asset_receivable", "liability_payable"),
                 }
             )
         id_fs_eu = (
@@ -48,6 +51,7 @@ class TestFinancialStatementEU(TransactionCase):
                 line["code"],
                 line["name"],
                 line["bal_eu"],
+                line.get("type", "income_other"),
             )
             if acc_id:
                 lines.append(
@@ -71,7 +75,9 @@ class TestFinancialStatementEU(TransactionCase):
         move = self.env["account.move"].create(move_vals)
         move.action_post()
 
-    def _get_financial_statement_values(self, date_start, date_end, values_precision):
+    def _get_financial_statement_values(
+        self, date_start, date_end, values_precision, schema="ordinary"
+    ):
         wiz_financial_statement_eu = self.env["financial.statement.eu.wizard"].create(
             {
                 "date_from": date_start,
@@ -80,6 +86,7 @@ class TestFinancialStatementEU(TransactionCase):
                 "hide_acc_amount_0": True,
                 "only_posted_move": True,
                 "ignore_closing_move": True,
+                "schema": schema,
             }
         )
         form_data = wiz_financial_statement_eu.get_data()
@@ -253,3 +260,98 @@ class TestFinancialStatementEU(TransactionCase):
         self.assertEqual(_get_financial_statement_line_amount(bal_lines, "PA"), 1037)
         self.assertEqual(_get_financial_statement_line_amount(bal_lines, "E.A"), 1030)
         self.assertEqual(_get_financial_statement_line_amount(bal_lines, "E=F"), 31)
+
+    def test_financial_statement_eu_abbreviated(self):
+        """Abbreviated schema: balance sheet up to the roman numerals, with
+        receivables and payables split by due date, and the grouped lines of
+        the income statement."""
+        company_id = self.env.company.id
+        journal = self.env["account.journal"].search(
+            [("company_id", "=", company_id)], limit=1
+        )
+        self._add_move(
+            company_id,
+            "vendita",
+            journal,
+            datetime(2023, 3, 1).date(),
+            (
+                {
+                    "code": "150100",
+                    "type": "asset_receivable",
+                    "name": "crediti v/clienti",
+                    "bal_eu": "PA.C21a",
+                    "debit": 122,
+                    "credit": 0,
+                },
+                {
+                    "code": "260100",
+                    "type": "liability_current",
+                    "name": "IVA n/debito",
+                    "bal_eu": "PP.DBa",
+                    "debit": 0,
+                    "credit": 22,
+                },
+                {
+                    "code": "310100",
+                    "type": "income",
+                    "name": "merci c/vendite",
+                    "bal_eu": "E.A1",
+                    "debit": 0,
+                    "credit": 100,
+                },
+            ),
+        )
+        self._add_move(
+            company_id,
+            "personale",
+            journal,
+            datetime(2023, 4, 1).date(),
+            (
+                {
+                    "code": "440100",
+                    "type": "expense",
+                    "name": "salari e stipendi",
+                    "bal_eu": "E.B41",
+                    "debit": 50,
+                    "credit": 0,
+                },
+                {
+                    "code": "440300",
+                    "type": "expense",
+                    "name": "trattamento di fine rapporto",
+                    "bal_eu": "E.B43",
+                    "debit": 10,
+                    "credit": 0,
+                },
+                {
+                    "code": "182001",
+                    "type": "asset_cash",
+                    "name": "Banca",
+                    "bal_eu": "PA.C41",
+                    "debit": 0,
+                    "credit": 60,
+                },
+            ),
+        )
+        date_from, date_to = datetime(2023, 1, 1).date(), datetime(2023, 12, 31).date()
+        bal_values = self._get_financial_statement_values(
+            date_from, date_to, "d", schema="abbreviated"
+        )
+        bal_lines = bal_values.get("financial_statement_eu_lines")
+        codes = [line["code"] for line in bal_lines]
+        self.assertNotIn("PA.C21a", codes)
+        self.assertEqual(_get_financial_statement_line_amount(bal_lines, "PA.C2"), 122)
+        self.assertEqual(_get_financial_statement_line_amount(bal_lines, "PA=C2E"), 122)
+        self.assertEqual(_get_financial_statement_line_amount(bal_lines, "PA=C2O"), 0)
+        self.assertEqual(_get_financial_statement_line_amount(bal_lines, "PP=DE"), 22)
+        self.assertEqual(_get_financial_statement_line_amount(bal_lines, "E.B41"), 50)
+        self.assertEqual(_get_financial_statement_line_amount(bal_lines, "E=B4cde"), 10)
+        receivables = next(line for line in bal_lines if line["code"] == "PA.C2")
+        self.assertEqual([acc["code"] for acc in receivables["accounts"]], ["150100"])
+        # The lines of the abbreviated schema only are not in the ordinary one
+        bal_values = self._get_financial_statement_values(date_from, date_to, "d")
+        codes = [
+            line["code"] for line in bal_values.get("financial_statement_eu_lines")
+        ]
+        self.assertIn("PA.C21a", codes)
+        self.assertNotIn("PA=C2E", codes)

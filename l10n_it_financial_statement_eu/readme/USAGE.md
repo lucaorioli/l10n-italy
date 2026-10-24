@@ -32,6 +32,11 @@ le seguenti opzioni di generazione:
   Se per effettuare la chiusura d’esercizio è stato utilizzato il modulo
   “account_fiscal_year_closing”, questa opzione consente di ignorare le
   registrazioni contabili di chiusura
+- Schema: ordinario (artt. 2424-2425 c.c.) o abbreviato (art. 2435-bis
+  c.c.). Nell'abbreviato lo stato patrimoniale arriva ai numeri romani,
+  con crediti e debiti esigibili entro e oltre l'esercizio successivo, e
+  il conto economico ha le voci raggruppate previste dalla tassonomia;
+  l'esportazione XBRL usa la tassonomia del bilancio abbreviato
 
 **English**
 
@@ -65,3 +70,8 @@ the "Financial statement EU" wizard:
   therefore all accounting accounts have a balance of 0 as at 31/12. If
   the "account_fiscal_year_closing" module was used to carry out the
   year-end closing, this option allows you to ignore the closing moves
+- Schema: ordinary (art. 2424-2425 c.c.) or abbreviated (art. 2435-bis
+  c.c.). In the abbreviated one the balance sheet stops at the roman
+  numerals, with receivables and payables due within and beyond the next
+  year, and the income statement has the grouped lines of the taxonomy;
+  the XBRL export uses the abbreviated financial statements taxonomy

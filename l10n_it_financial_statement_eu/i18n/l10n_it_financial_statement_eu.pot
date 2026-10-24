@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16,6 +16,12 @@ msgstr ""
 #. module: l10n_it_financial_statement_eu
 #: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.fseu_html_report
 msgid "&amp;emsp;"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_wizard.py:0
+msgid "(abbreviated)"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
@@ -58,6 +64,16 @@ msgstr ""
 #. odoo-python
 #: code:addons/l10n_it_financial_statement_eu/models/financial_statement_eu.py:0
 msgid "ASSETS codes must starting by PA"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__schema__abbreviated
+msgid "Abbreviated (art. 2435-bis c.c.)"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__abbreviated
+msgid "Abbreviated schema"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
@@ -138,6 +154,13 @@ msgid "Code"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu__sum_codes
+msgid ""
+"Comma separated codes of the lines summed by a line of the abbreviated "
+"schema only, such as receivables due within the next year"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__company_id
 msgid "Company"
 msgstr ""
@@ -199,9 +222,13 @@ msgid "Description"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_account_account__display_name
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__display_name
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_log__display_name
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__display_name
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_report_l10n_it_financial_statement_eu_fseu_html_report__display_name
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_report_l10n_it_financial_statement_eu_fseu_xbrl_report__display_name
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_report_l10n_it_financial_statement_eu_fseu_xlsx_report__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -285,9 +312,13 @@ msgid "Hide account with amount 0"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_account_account__id
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__id
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_log__id
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__id
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_report_l10n_it_financial_statement_eu_fseu_html_report__id
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_report_l10n_it_financial_statement_eu_fseu_xbrl_report__id
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_report_l10n_it_financial_statement_eu_fseu_xlsx_report__id
 msgid "ID"
 msgstr ""
 
@@ -350,6 +381,16 @@ msgid "Liabilities"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu__abbreviated
+msgid "Line of the abbreviated financial statements (art. 2435-bis c.c.)"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu__ordinary
+msgid "Line of the ordinary financial statements (art. 2424-2425 c.c.)"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
 #: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.view_form_account_financial_statement_eu
 msgid "Link to Financial statement EU"
 msgstr ""
@@ -381,6 +422,16 @@ msgid "No childs only"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__schema__ordinary
+msgid "Ordinary (art. 2424-2425 c.c.)"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__ordinary
+msgid "Ordinary schema"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__parent_id
 msgid "Parent"
 msgstr ""
@@ -398,6 +449,11 @@ msgstr ""
 #. module: l10n_it_financial_statement_eu
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__l10n_it_eco_index_office
 msgid "REA office"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__schema
+msgid "Schema"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
@@ -429,6 +485,11 @@ msgstr ""
 #. module: l10n_it_financial_statement_eu
 #: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu__sign_calculation__-
 msgid "Subtract"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu__sum_codes
+msgid "Sum of lines"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu

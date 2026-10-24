@@ -16,6 +16,7 @@ class FinancialStatementEU(models.Model):
     _description = "Financial statement EU line"
     _rec_names_search = ["complete_name"]
     _rec_name = "complete_name"
+    _order = "sequence, id"
     zone_bal = fields.Selection(
         [
             ("PA", "Assets"),
@@ -50,6 +51,20 @@ class FinancialStatementEU(models.Model):
     sequence = fields.Integer(
         string="#",
         required=False,
+    )
+    ordinary = fields.Boolean(
+        string="Ordinary schema",
+        default=True,
+        help="Line of the ordinary financial statements (art. 2424-2425 c.c.)",
+    )
+    abbreviated = fields.Boolean(
+        string="Abbreviated schema",
+        help="Line of the abbreviated financial statements (art. 2435-bis c.c.)",
+    )
+    sum_codes = fields.Char(
+        string="Sum of lines",
+        help="Comma separated codes of the lines summed by a line of the "
+        "abbreviated schema only, such as receivables due within the next year",
     )
     tag_xbrl = fields.Char(
         string="Name XBRL",
@@ -289,6 +304,53 @@ class FinancialStatementEU(models.Model):
                 )
         return financial_statement_line_amount
 
+    def _get_hidden_leaves(self):
+        """The detail lines summed by this line and not shown in the
+        abbreviated schema, down to the first shown children."""
+        self.ensure_one()
+        leaves = self.browse()
+        for child in self.child_ids.filtered(lambda line: not line.abbreviated):
+            leaves |= child._get_hidden_leaves() if child.child_ids else child
+        return leaves
+
+    def _prepare_abbreviated(self, financial_statement_eu_lines, form_data):
+        """Abbreviated schema: the lines that only exist there are sums of other
+        lines, and a line whose details are not shown lists their accounts."""
+        if form_data.get("schema") != "abbreviated":
+            return
+        for line in financial_statement_eu_lines.values():
+            item = line["financial_statement_line"]
+            if item.sum_codes:
+                codes = [
+                    code.strip()
+                    for code in item.sum_codes.split(",")
+                    if code.strip() in financial_statement_eu_lines
+                ]
+                for key in ("total_amount", "rounded_amount"):
+                    line[key] = sum(
+                        financial_statement_eu_lines[code][key] for code in codes
+                    )
+                line["rounded_amount"] = tools.float_round(line["rounded_amount"], 2)
+            elif item.abbreviated and item.child_ids:
+                line["account_list"] = sorted(
+                    (
+                        account
+                        for leaf in item._get_hidden_leaves()
+                        for account in financial_statement_eu_lines[leaf.code][
+                            "account_list"
+                        ]
+                    ),
+                    key=operator.itemgetter("code"),
+                )
+
+    def _filter_schema(self, report_lines, form_data):
+        """The lines of the chosen schema, ordinary or abbreviated."""
+        schema = (
+            "abbreviated" if form_data.get("schema") == "abbreviated" else "ordinary"
+        )
+        codes = set(self.search([(schema, "=", True)]).mapped("code"))
+        return [line for line in report_lines if line["code"] in codes]
+
     def round_bal_val(self, val, precision):
         if precision == "u":
             return tools.float_round(val, 0)
@@ -410,6 +472,7 @@ class FinancialStatementEU(models.Model):
             form_data["values_precision"],
         )
         self.cal_financial_statement_eu_line_amount(financial_statement_eu_lines, "PP")
+        self._prepare_abbreviated(financial_statement_eu_lines, form_data)
         log_warnings = ""
         acc_ignore = ""
         financial_statement_eu_lines_report_data = []
@@ -530,7 +593,9 @@ class FinancialStatementEU(models.Model):
             warning_lines = log_warnings.split("\n")
         data = {
             "form_data": form_data,
-            "financial_statement_eu_lines": financial_statement_eu_lines_report_data,
+            "financial_statement_eu_lines": self._filter_schema(
+                financial_statement_eu_lines_report_data, form_data
+            ),
             "financial_statement_state": financial_statement_state,
             "warnings": warning_lines,
             "unlinked_account": unlinked_account,

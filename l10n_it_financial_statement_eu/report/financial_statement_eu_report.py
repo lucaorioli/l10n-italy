@@ -165,6 +165,29 @@ class FinancialStatementEuXBRLReport(models.AbstractModel):
                 )
         return result
 
+    def get_abbreviated_line_tags(
+        self, financial_statement_eu_lines, i_year, d_year, decimal_precision
+    ):
+        """The lines of the abbreviated schema, with their own taxonomy tags:
+        balance sheet at the end date, income statement over the period."""
+        items = {
+            item.code: item
+            for item in self.env["financial.statement.eu"].search(
+                [("abbreviated", "=", True), ("tag_xbrl", "!=", False)]
+            )
+        }
+        result = ""
+        for line in financial_statement_eu_lines:
+            item = items.get(line["code"])
+            if item:
+                result += self.get_xbrl_data_tag(
+                    item.tag_xbrl,
+                    d_year if item.zone_bal == "EC" else i_year,
+                    line["amount"],
+                    decimal_precision,
+                )
+        return result
+
     def generate_report(self, ir_report, docids, data=None):
         financial_statement_form_data = data
         financial_statement_eu_data = self.env[
@@ -316,6 +339,18 @@ class FinancialStatementEuXBRLReport(models.AbstractModel):
             decimal_precision = 2
         else:
             decimal_precision = 0
+        if financial_statement_form_data.get("schema") == "abbreviated":
+            # Abbreviated financial statements (taxonomy entry point itcc-ci-abb)
+            xbrl += self.get_abbreviated_line_tags(
+                financial_statement_eu_data["financial_statement_eu_lines"],
+                i_year,
+                d_year,
+                decimal_precision,
+            )
+            xbrl = xbrl.replace("itcc-ci-ese", "itcc-ci-abb").replace(
+                "/itcc/ci/ese/", "/itcc/ci/abb/"
+            )
+            return xbrl + "\n</xbrl>", "xbrl"
         tmp_financial_statement_lines = self.env["financial.statement.eu"].search(
             [("code", "=", "PA")]
         )
