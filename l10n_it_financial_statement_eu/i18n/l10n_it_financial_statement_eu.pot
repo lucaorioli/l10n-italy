@@ -222,6 +222,11 @@ msgid "Assignable"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__balance_mode__auto
+msgid "Automatic"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
 #: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
 msgid "Back"
 msgstr ""
@@ -230,6 +235,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
 msgid "Balance at end date"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__balance_mode
+msgid "Balance sheet balances"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
@@ -521,6 +533,29 @@ msgid "From date"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__balance_mode__beginning
+msgid "From the beginning"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__balance_mode__opening
+msgid "From the opening entry"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__balance_mode
+msgid ""
+"From the opening entry: only the movements of the period count, so the books"
+" must be closed and reopened every year (for instance with "
+"account_fiscal_year_closing). From the beginning: for books that are not "
+"closed, as Odoo does by default; balance sheet accounts take all the "
+"movements up to the end date, and the results of previous years not yet "
+"allocated go to A.VIII Retained earnings. Automatic: from the opening entry "
+"if the balance sheet accounts have no balance on the day before the start "
+"date, from the beginning otherwise."
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
 #. odoo-python
 #: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__hide_acc_amount_0
@@ -749,6 +784,12 @@ msgid "Reading XLSX files needs openpyxl."
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/models/financial_statement_eu.py:0
+msgid "Results of previous years not yet allocated"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__schema
 msgid "Schema"
 msgstr ""
@@ -967,6 +1008,12 @@ msgstr ""
 #. module: l10n_it_financial_statement_eu
 #. odoo-python
 #: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+msgid "automatic"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
 #: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__values_precision__u
 msgid "euro units"
 msgstr ""
@@ -982,6 +1029,18 @@ msgstr ""
 #: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
 #: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.fseu_html_report
 msgid "from"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+msgid "from the beginning"
+msgstr ""
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+msgid "from the opening entry"
 msgstr ""
 
 #. module: l10n_it_financial_statement_eu

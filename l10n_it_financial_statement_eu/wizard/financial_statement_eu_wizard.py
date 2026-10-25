@@ -76,6 +76,24 @@ class CreateFinancialStatementWizard(models.TransientModel):
     ignore_closing_move = fields.Boolean(
         string="Ignore closing registration", default=True
     )
+    balance_mode = fields.Selection(
+        [
+            ("auto", "Automatic"),
+            ("opening", "From the opening entry"),
+            ("beginning", "From the beginning"),
+        ],
+        string="Balance sheet balances",
+        default="auto",
+        required=True,
+        help="From the opening entry: only the movements of the period count, "
+        "so the books must be closed and reopened every year (for instance with "
+        "account_fiscal_year_closing). From the beginning: for books that are not "
+        "closed, as Odoo does by default; balance sheet accounts take all the "
+        "movements up to the end date, and the results of previous years not yet "
+        "allocated go to A.VIII Retained earnings. Automatic: from the opening "
+        "entry if the balance sheet accounts have no balance on the day before the "
+        "start date, from the beginning otherwise.",
+    )
     log_warnings = fields.Text(string="WARNING:", default="")
     # Financial statement HEADER
     company_id = fields.Many2one("res.company", string="Company")

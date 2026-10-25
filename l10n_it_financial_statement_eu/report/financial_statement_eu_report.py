@@ -60,6 +60,15 @@ class FinancialStatementEuXlsxReport(models.AbstractModel):
             str_opz += self.env._("YES")
         else:
             str_opz += self.env._("NO")
+        # The mode actually used, also when it was chosen automatically
+        modes = {
+            "opening": self.env._("from the opening entry"),
+            "beginning": self.env._("from the beginning"),
+        }
+        str_opz += " / " + self.env._("Balance sheet balances") + ": "
+        str_opz += modes[financial_statement_eu_data["balance_mode"]]
+        if data.get("balance_mode") == "auto":
+            str_opz += " (" + self.env._("automatic") + ")"
         str_opz += ")"
         st_bold9 = workbook.add_format({"font_size": 9})
         sheet.write(6, 0, str_opz, st_bold9)

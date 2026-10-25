@@ -18,6 +18,7 @@
                             <field name="hide_acc_amount_0" />
                             <field name="only_posted_move" />
                             <field name="ignore_closing_move" />
+                            <field name="balance_mode" />
                         </group>
                     </group>
                     <footer>

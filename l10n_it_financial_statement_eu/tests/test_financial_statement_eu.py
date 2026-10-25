@@ -76,7 +76,12 @@ class TestFinancialStatementEU(TransactionCase):
         move.action_post()
 
     def _get_financial_statement_values(
-        self, date_start, date_end, values_precision, schema="ordinary"
+        self,
+        date_start,
+        date_end,
+        values_precision,
+        schema="ordinary",
+        balance_mode="auto",
     ):
         wiz_financial_statement_eu = self.env["financial.statement.eu.wizard"].create(
             {
@@ -87,6 +92,7 @@ class TestFinancialStatementEU(TransactionCase):
                 "only_posted_move": True,
                 "ignore_closing_move": True,
                 "schema": schema,
+                "balance_mode": balance_mode,
             }
         )
         form_data = wiz_financial_statement_eu.get_data()
@@ -355,3 +361,111 @@ class TestFinancialStatementEU(TransactionCase):
         ]
         self.assertIn("PA.C21a", codes)
         self.assertNotIn("PA=C2E", codes)
+
+    def _line(self, code, name, eu, kind, debit=0, credit=0):
+        return {
+            "code": code,
+            "name": name,
+            "bal_eu": eu,
+            "type": kind,
+            "debit": debit,
+            "credit": credit,
+        }
+
+    def _add_previous_year(self):
+        """A year of books before 2023, then a purchase in 2023."""
+        company_id = self.env.company.id
+        journal = self.env["account.journal"].search(
+            [("company_id", "=", company_id)], limit=1
+        )
+        bank = ("182001", "Banca", "PA.C41", "asset_cash")
+        self._add_move(
+            company_id,
+            "capitale versato",
+            journal,
+            datetime(2022, 2, 1).date(),
+            (
+                self._line(*bank, debit=1000),
+                self._line("210100", "Capitale", "PP.A1", "equity", credit=1000),
+            ),
+        )
+        self._add_move(
+            company_id,
+            "vendita dell'anno prima",
+            journal,
+            datetime(2022, 6, 1).date(),
+            (
+                self._line("150100", "Crediti", "PA.C21a", "asset_receivable", 100),
+                self._line("310100", "Vendite", "E.A1", "income", credit=100),
+            ),
+        )
+        self._add_move(
+            company_id,
+            "acquisto dell'anno",
+            journal,
+            datetime(2023, 3, 1).date(),
+            (
+                self._line("410100", "Acquisti", "E.B1", "expense", debit=40),
+                self._line(*bank, credit=40),
+            ),
+        )
+        return company_id, journal
+
+    def _amounts(self, balance_mode="auto"):
+        values = self._get_financial_statement_values(
+            datetime(2023, 1, 1).date(),
+            datetime(2023, 12, 31).date(),
+            "d",
+            balance_mode=balance_mode,
+        )
+        self.assertNotEqual(values.get("financial_statement_state"), "UNBALANCED")
+        lines = values.get("financial_statement_eu_lines")
+        return {
+            code: _get_financial_statement_line_amount(lines, code)
+            for code in ("PA.C41", "PA", "PP.A8", "PP=A9", "PP")
+        }
+
+    def test_balance_mode_books_not_closed(self):
+        """Books never closed, as Odoo keeps them: in automatic mode the
+        balance sheet takes the movements from the beginning, and the result of
+        the previous year goes to A.VIII Retained earnings."""
+        self._add_previous_year()
+        expected = {"PA.C41": 960, "PA": 1060, "PP.A8": 100, "PP=A9": -40, "PP": 1060}
+        self.assertEqual(self._amounts(), expected)
+        self.assertEqual(self._amounts("beginning"), expected)
+        # From the opening entry, without one, only the movements of 2023 count
+        self.assertEqual(self._amounts("opening")["PA.C41"], -40)
+
+    def test_balance_mode_books_closed(self):
+        """Books closed and reopened by hand: in automatic mode only the
+        movements of the period count, opening entry included."""
+        company_id, journal = self._add_previous_year()
+        bank = ("182001", "Banca", "PA.C41", "asset_cash")
+        retained = ("210200", "Utili portati a nuovo", "PP.A8", "equity")
+        self._add_move(
+            company_id,
+            "chiusura",
+            journal,
+            datetime(2022, 12, 31).date(),
+            (
+                self._line(*bank, credit=1000),
+                self._line("150100", "Crediti", "PA.C21a", "asset_receivable", 0, 100),
+                self._line("210100", "Capitale", "PP.A1", "equity", debit=1000),
+                self._line("310100", "Vendite", "E.A1", "income", debit=100),
+            ),
+        )
+        self._add_move(
+            company_id,
+            "riapertura",
+            journal,
+            datetime(2023, 1, 1).date(),
+            (
+                self._line(*bank, debit=1000),
+                self._line("150100", "Crediti", "PA.C21a", "asset_receivable", 100),
+                self._line("210100", "Capitale", "PP.A1", "equity", credit=1000),
+                self._line(*retained, credit=100),
+            ),
+        )
+        expected = {"PA.C41": 960, "PA": 1060, "PP.A8": 100, "PP=A9": -40, "PP": 1060}
+        self.assertEqual(self._amounts(), expected)
+        self.assertEqual(self._amounts("opening"), expected)

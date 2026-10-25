@@ -505,6 +505,16 @@ c.c.). Nell’abbreviato lo stato patrimoniale arriva ai numeri romani,
 con crediti e debiti esigibili entro e oltre l’esercizio successivo, e
 il conto economico ha le voci raggruppate previste dalla tassonomia;
 l’esportazione XBRL usa la tassonomia del bilancio abbreviato</li>
+<li>Saldi patrimoniali: “Dalla riapertura” somma i soli movimenti del
+periodo, quindi i conti devono essere chiusi e riaperti ogni anno (per
+esempio con “account_fiscal_year_closing”); “Dall’inizio” è per le
+contabilità non chiuse, come fa Odoo normalmente: i conti patrimoniali
+prendono tutti i movimenti fino alla data finale, escluse chiusure e
+riaperture, e i risultati degli esercizi precedenti non ancora
+destinati vanno in A.VIII Utili (perdite) portati a nuovo;
+“Automatico” (predefinito) usa la riapertura se il giorno prima della
+data iniziale i conti patrimoniali non hanno saldo, altrimenti i saldi
+dall’inizio. L’esportazione XLSX riporta il criterio usato</li>
 </ul>
 <p><strong>English</strong></p>
 <p>The “Accounting / Configuration / Chart of Accounts” mask has been
@@ -552,6 +562,16 @@ c.c.). In the abbreviated one the balance sheet stops at the roman
 numerals, with receivables and payables due within and beyond the next
 year, and the income statement has the grouped lines of the taxonomy;
 the XBRL export uses the abbreviated financial statements taxonomy</li>
+<li>Balance sheet balances: “From the opening entry” sums the movements of
+the period only, so accounts must be closed and reopened every year
+(for instance with “account_fiscal_year_closing”); “From the
+beginning” is for books that are not closed, as Odoo keeps them by
+default: balance sheet accounts take all the movements up to the end
+date, closing and opening moves left out, and the results of previous
+years not yet allocated go to A.VIII Retained earnings; “Automatic”
+(default) uses the opening entry if balance sheet accounts have no
+balance on the day before the start date, the balances from the
+beginning otherwise. The XLSX export shows the criterion used</li>
 </ul>
 </div>
 <div class="section" id="bug-tracker">

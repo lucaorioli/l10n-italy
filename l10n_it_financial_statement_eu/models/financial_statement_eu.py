@@ -242,6 +242,10 @@ class FinancialStatementEU(models.Model):
         domain = []
         domain.append(("company_ids", "in", company_id))
         self.add_calc_type_domain(domain, calc_type, financial_statement_eu_id)
+        from_beginning = self.env.context.get("fseu_balance_mode") == "beginning"
+        if from_beginning:
+            # Unallocated earnings are reported in A.VIII, see _get_retained_earnings
+            domain.append(("account_type", "!=", "equity_unaffected"))
         accounts = self.env["account.account"].search(domain, order="code")
         aml_model = self.env["account.move.line"]
         for account in accounts:
@@ -250,12 +254,15 @@ class FinancialStatementEU(models.Model):
             domain = [
                 ("company_id", "=", company_id),
                 ("account_id", "=", account.id),
-                ("date", ">=", date_from),
                 ("date", "<=", date_to),
             ]
+            if not (from_beginning and account.include_initial_balance):
+                domain.append(("date", ">=", date_from))
             if only_posted_move:
                 domain.append(("move_id.state", "=", "posted"))
-            if ignore_closing_move:
+            if from_beginning:
+                domain += self._get_no_closing_domain()
+            elif ignore_closing_move:
                 domain.append(("move_id.closing_type", "!=", "closing"))
                 domain.append(("move_id.closing_type", "!=", "loss_profit"))
             amls = aml_model._read_group(
@@ -351,6 +358,86 @@ class FinancialStatementEU(models.Model):
         codes = set(self.search([(schema, "=", True)]).mapped("code"))
         return [line for line in report_lines if line["code"] in codes]
 
+    def _get_no_closing_domain(self):
+        """Balances from the beginning: closing, result and opening moves of
+        account_fiscal_year_closing all left out, so that the books read as if
+        they had never been closed. Leaving out the closing and keeping the
+        opening would count balances twice."""
+        if not self.env["account.move"].fields_get(allfields=["closing_type"]):
+            return []
+        return [
+            ("move_id.closing_type", "not in", ("closing", "loss_profit", "opening"))
+        ]
+
+    def _get_balance_mode(self, form_data):
+        """How balance sheet accounts are read, "opening" or "beginning". In
+        automatic mode the books count as closed when no balance sheet account
+        has a balance on the day before the start date: closed with
+        account_fiscal_year_closing, by hand, or with no previous movements."""
+        mode = form_data.get("balance_mode") or "opening"
+        if mode != "auto":
+            return mode
+        domain = [
+            ("company_id", "=", form_data["company_id"][0]),
+            ("date", "<", form_data["date_from"]),
+            ("account_id.include_initial_balance", "=", True),
+        ]
+        if form_data["only_posted_move"]:
+            domain.append(("move_id.state", "=", "posted"))
+        currency = self.env["res.currency"].browse(form_data["currency_id"][0])
+        groups = self.env["account.move.line"]._read_group(
+            domain, ["account_id"], ["balance:sum"]
+        )
+        if any(not currency.is_zero(balance) for _account, balance in groups):
+            return "beginning"
+        return "opening"
+
+    def _get_retained_earnings(self, company_id, date_from, date_to, only_posted_move):
+        """Results of previous years not yet allocated, for statements computed
+        with balances from the beginning: income and expense before the period,
+        plus the unallocated earnings accounts up to the end of the period
+        (debit - credit)."""
+        domain = [
+            ("company_id", "=", company_id),
+            ("date", "<=", date_to),
+            "|",
+            "&",
+            ("account_id.include_initial_balance", "=", False),
+            ("date", "<", date_from),
+            ("account_id.account_type", "=", "equity_unaffected"),
+        ] + self._get_no_closing_domain()
+        if only_posted_move:
+            domain.append(("move_id.state", "=", "posted"))
+        [(debit, credit)] = self.env["account.move.line"]._read_group(
+            domain, aggregates=["debit:sum", "credit:sum"]
+        )
+        return (debit or 0.0) - (credit or 0.0)
+
+    def _add_retained_earnings(self, financial_statement_eu_lines, form_data):
+        """Balances from the beginning: the results of previous years not yet
+        allocated go to A.VIII Retained earnings."""
+        if self.env.context.get("fseu_balance_mode") != "beginning":
+            return
+        retained = -self._get_retained_earnings(
+            form_data["company_id"][0],
+            form_data["date_from"],
+            form_data["date_to"],
+            form_data["only_posted_move"],
+        )
+        line = financial_statement_eu_lines["PP.A8"]
+        line["total_amount"] += retained
+        line["rounded_amount"] = self.round_bal_val(
+            line["total_amount"], form_data["values_precision"]
+        )
+        if retained or not form_data["hide_acc_amount_0"]:
+            line["account_list"].append(
+                {
+                    "code": "",
+                    "desc": self.env._("Results of previous years not yet allocated"),
+                    "amount": retained,
+                }
+            )
+
     def round_bal_val(self, val, precision):
         if precision == "u":
             return tools.float_round(val, 0)
@@ -360,6 +447,14 @@ class FinancialStatementEU(models.Model):
             return val
 
     def cal_financial_statement_eu_data(self, form_data):
+        mode = self._get_balance_mode(form_data)
+        data = self.with_context(
+            fseu_balance_mode=mode
+        )._cal_financial_statement_eu_data(form_data)
+        data["balance_mode"] = mode
+        return data
+
+    def _cal_financial_statement_eu_data(self, form_data):
         financial_statement_eu_lines = {}
         company_id = form_data["company_id"][0]
         currency_id = self.env["res.currency"].browse(form_data["currency_id"][0])
@@ -404,6 +499,7 @@ class FinancialStatementEU(models.Model):
                 "total_amount": financial_statement_eu_amount,
                 "account_list": account_list,
             }
+        self._add_retained_earnings(financial_statement_eu_lines, form_data)
         self.cal_financial_statement_eu_line_amount(financial_statement_eu_lines, "E.A")
         self.cal_financial_statement_eu_line_amount(financial_statement_eu_lines, "E.B")
         self.cal_financial_statement_eu_line_amount(financial_statement_eu_lines, "E.C")

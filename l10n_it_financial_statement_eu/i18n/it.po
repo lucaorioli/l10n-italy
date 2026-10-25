@@ -1077,3 +1077,70 @@ msgstr ""
 #: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
 msgid "the account has movements or a balance and no line"
 msgstr "il conto ha movimenti o un saldo e nessuna voce"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__balance_mode__auto
+msgid "Automatic"
+msgstr "Automatico"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__balance_mode
+msgid "Balance sheet balances"
+msgstr "Saldi patrimoniali"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__balance_mode__beginning
+msgid "From the beginning"
+msgstr "Dall'inizio"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_wizard__balance_mode__opening
+msgid "From the opening entry"
+msgstr "Dalla riapertura"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__balance_mode
+msgid ""
+"From the opening entry: only the movements of the period count, so the books"
+" must be closed and reopened every year (for instance with "
+"account_fiscal_year_closing). From the beginning: for books that are not "
+"closed, as Odoo does by default; balance sheet accounts take all the "
+"movements up to the end date, and the results of previous years not yet "
+"allocated go to A.VIII Retained earnings. Automatic: from the opening entry "
+"if the balance sheet accounts have no balance on the day before the start "
+"date, from the beginning otherwise."
+msgstr ""
+"Dalla riapertura: contano solo i movimenti del periodo, quindi i conti vanno"
+" chiusi e riaperti ogni anno (per esempio con account_fiscal_year_closing). "
+"Dall'inizio: per le contabilità non chiuse, come fa Odoo normalmente; i "
+"conti patrimoniali prendono tutti i movimenti fino alla data finale e i "
+"risultati degli esercizi precedenti non ancora destinati vanno in A.VIII "
+"Utili (perdite) portati a nuovo. Automatico: dalla riapertura se il giorno "
+"prima della data iniziale i conti patrimoniali non hanno saldo, altrimenti "
+"dall'inizio."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/models/financial_statement_eu.py:0
+msgid "Results of previous years not yet allocated"
+msgstr "Risultati degli esercizi precedenti non ancora destinati"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+msgid "automatic"
+msgstr "automatico"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+msgid "from the beginning"
+msgstr "dall'inizio"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/report/financial_statement_eu_report.py:0
+msgid "from the opening entry"
+msgstr "dalla riapertura"
