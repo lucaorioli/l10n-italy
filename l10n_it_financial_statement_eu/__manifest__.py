@@ -32,6 +32,7 @@
         "report/financial_statement_eu_report.xml",
         "views/financial_statement_eu_view.xml",
         "wizard/financial_statement_eu_wizard.xml",
+        "wizard/financial_statement_eu_mapping_wizard.xml",
     ],
     "application": False,
     "installable": True,

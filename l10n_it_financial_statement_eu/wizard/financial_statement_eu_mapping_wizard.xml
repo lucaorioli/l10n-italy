@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="financial_statement_eu_mapping_wizard_view" model="ir.ui.view">
+        <field name="name">financial.statement.eu.mapping.wizard.form</field>
+        <field name="model">financial.statement.eu.mapping.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="state" invisible="1" />
+                <group invisible="state != 'start'">
+                    <group string="Export">
+                        <field name="date_from" />
+                        <field name="date_to" />
+                        <field
+                            name="export_file"
+                            filename="export_filename"
+                            invisible="not export_file"
+                        />
+                        <field name="export_filename" invisible="1" />
+                    </group>
+                    <group string="Import">
+                        <field name="import_file" filename="import_filename" />
+                        <field name="import_filename" invisible="1" />
+                    </group>
+                </group>
+                <group string="Instructions" invisible="state != 'start'">
+                    <field
+                        name="instructions"
+                        nolabel="1"
+                        colspan="2"
+                        widget="CopyClipboardText"
+                    />
+                </group>
+                <div invisible="state != 'preview'">
+                    <field name="error_count" invisible="1" />
+                    <div
+                        class="alert alert-danger"
+                        role="alert"
+                        invisible="not error_count"
+                    >
+                        Some rows have errors: correct them in the file and import it again.
+                    </div>
+                    <field name="line_ids" nolabel="1" readonly="1">
+                        <list decoration-danger="error">
+                            <field name="account_code" />
+                            <field name="account_id" />
+                            <field name="old_debit_id" />
+                            <field name="old_credit_id" />
+                            <field name="debit_id" />
+                            <field name="credit_id" />
+                            <field name="notes" />
+                            <field name="error" />
+                        </list>
+                    </field>
+                </div>
+                <footer>
+                    <button
+                        type="object"
+                        name="action_export"
+                        string="Export"
+                        class="oe_highlight"
+                        invisible="state != 'start'"
+                    />
+                    <button
+                        type="object"
+                        name="action_import"
+                        string="Import"
+                        invisible="state != 'start'"
+                    />
+                    <button
+                        type="object"
+                        name="action_apply"
+                        string="Apply the changes"
+                        class="oe_highlight"
+                        invisible="state != 'preview' or error_count"
+                    />
+                    <button
+                        type="object"
+                        name="action_back"
+                        string="Back"
+                        invisible="state != 'preview'"
+                    />
+                    <button special="cancel" string="Close" class="oe_link" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record
+        id="action_financial_statement_eu_mapping_wizard"
+        model="ir.actions.act_window"
+    >
+        <field name="name">Link accounts to Financial statement EU</field>
+        <field name="res_model">financial.statement.eu.mapping.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="financial_statement_eu_mapping_wizard_menu" model="ir.ui.menu">
+        <field name="name">Link accounts to Financial statement EU</field>
+        <field name="parent_id" ref="account.account_account_menu" />
+        <field name="action" ref="action_financial_statement_eu_mapping_wizard" />
+        <field name="sequence" eval="17" />
+        <field name="group_ids" eval="[(4, ref('account.group_account_manager'))]" />
+    </record>
+</odoo>

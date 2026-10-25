@@ -628,12 +628,11 @@ msgstr "Somma delle voci"
 #. module: l10n_it_financial_statement_eu
 #: model:ir.model.fields,help:l10n_it_financial_statement_eu.field_financial_statement_eu__sum_codes
 msgid ""
-"Comma separated codes of the lines summed by a line of the "
-"abbreviated schema only, such as receivables due within the next year"
+"Comma separated codes of the lines summed by a line of the abbreviated "
+"schema only, such as receivables due within the next year"
 msgstr ""
-"Codici, separati da virgola, delle voci sommate da una voce del solo "
-"schema abbreviato, come i crediti esigibili entro l'esercizio "
-"successivo"
+"Codici, separati da virgola, delle voci sommate da una voce del solo schema "
+"abbreviato, come i crediti esigibili entro l'esercizio successivo"
 
 #. module: l10n_it_financial_statement_eu
 #: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_wizard__schema
@@ -654,3 +653,421 @@ msgstr "Abbreviato (art. 2435-bis c.c.)"
 #: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_wizard.py:0
 msgid "(abbreviated)"
 msgstr "(abbreviato)"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "%(code)s is a total or is computed"
+msgstr "%(code)s è un totale o una voce calcolata"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "%(code)s is not a line"
+msgstr "%(code)s non è una voce"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "1. Every account with a balance must have at least one line."
+msgstr "1. Ogni conto con un saldo deve avere almeno una voce."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"2. The debit line receives the balance when it is a debit, the credit line "
+"when it is a credit. With only one of the two, the balance goes there "
+"whatever its sign. Fill in both only for the accounts that change nature "
+"with the sign of their balance, such as bank accounts (PA.C41 Bank and "
+"postal deposits when in debit, PP.D3a Payables to banks when in credit) or "
+"tax accounts (receivables or payables)."
+msgstr ""
+"2. La voce dare riceve il saldo quando è in dare, la voce avere quando è in "
+"avere. Con una sola delle due, il saldo va lì qualunque sia il suo segno. "
+"Compilarle entrambe solo per i conti che cambiano natura con il segno del "
+"saldo, come i conti bancari (PA.C41 Depositi bancari e postali quando sono "
+"in dare, PP.D3a Debiti verso banche quando sono in avere) o i conti delle "
+"imposte (crediti o debiti)."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"3. Balance sheet accounts go to the lines starting with PA (assets) or PP "
+"(equity and liabilities), income statement accounts to the lines starting "
+"with E."
+msgstr ""
+"3. I conti patrimoniali vanno nelle voci che iniziano con PA (attivo) o PP "
+"(passivo e patrimonio netto), i conti economici in quelle che iniziano con "
+"E."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"4. Accumulated depreciation and allowances go to the line of the asset they "
+"adjust: the financial statements show assets net of them."
+msgstr ""
+"4. Fondi ammortamento e fondi svalutazione vanno nella voce del bene che "
+"rettificano: il bilancio espone i beni al netto dei fondi."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"5. Receivables and payables have separate lines for the amounts due within "
+"and beyond the next financial year: choose by the due date of the account."
+msgstr ""
+"5. Crediti e debiti hanno voci distinte per gli importi esigibili entro e "
+"oltre l'esercizio successivo: scegliere in base alla scadenza del conto."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"6. The result of the year is computed from the income statement: the "
+"accounts that receive it at closing go to PP=A9, which does not add them "
+"again. The results of previous years not yet allocated go to PP.A8 Retained "
+"earnings."
+msgstr ""
+"6. Il risultato dell'esercizio si calcola dal conto economico: i conti che "
+"lo ricevono in chiusura vanno in PP=A9, che non li somma una seconda volta. "
+"I risultati degli esercizi precedenti non ancora destinati vanno in PP.A8 "
+"Utili (perdite) portati a nuovo."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"7. Do not change the \"%(code)s\" column and do not rename columns: the "
+"import finds the accounts by code and the columns by their title. Accounts "
+"left out of the file keep their lines, an empty cell removes the line. The "
+"other columns are information only."
+msgstr ""
+"7. Non modificare la colonna \"%(code)s\" e non rinominare le colonne: "
+"l'importazione trova i conti per codice e le colonne per titolo. I conti "
+"assenti dal file mantengono le loro voci, una cella vuota toglie la voce. Le"
+" altre colonne sono solo informative."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"8. Write the reason of any doubtful choice in the \"%(notes)s\" column: the "
+"import shows it next to the change."
+msgstr ""
+"8. Scrivere nella colonna \"%(notes)s\" il motivo di ogni scelta dubbia: "
+"l'importazione la mostra accanto alla modifica."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Accounts"
+msgstr "Conti"
+
+#. module: l10n_it_financial_statement_eu
+#: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
+msgid "Apply the changes"
+msgstr "Applica le modifiche"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Assignable"
+msgstr "Assegnabile"
+
+#. module: l10n_it_financial_statement_eu
+#: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
+msgid "Back"
+msgstr "Indietro"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Balance"
+msgstr "Saldo"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model,name:l10n_it_financial_statement_eu.model_financial_statement_eu_mapping_line
+msgid "Change of the link of an account to the Financial statement EU"
+msgstr "Modifica dell'associazione di un conto al Bilancio UE"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_wizard__line_ids
+msgid "Changes"
+msgstr "Modifiche"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Choose the file to import."
+msgstr "Scegliere il file da importare."
+
+#. module: l10n_it_financial_statement_eu
+#: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
+msgid "Close"
+msgstr "Chiudi"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Correct the errors in the file and import it again."
+msgstr "Correggere gli errori nel file e importarlo di nuovo."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Credit"
+msgstr "Avere"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Credit line"
+msgstr "Voce avere"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_line__old_credit_id
+msgid "Current credit line"
+msgstr "Voce avere attuale"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_line__old_debit_id
+msgid "Current debit line"
+msgstr "Voce dare attuale"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Debit"
+msgstr "Dare"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Debit line"
+msgstr "Voce dare"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_line__error
+msgid "Error"
+msgstr "Errore"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_wizard__error_count
+msgid "Error Count"
+msgstr "Numero di errori"
+
+#. module: l10n_it_financial_statement_eu
+#: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
+msgid "Export"
+msgstr "Esporta"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_wizard__export_file
+msgid "Export File"
+msgstr "File esportato"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_wizard__export_filename
+msgid "Export Filename"
+msgstr "Nome del file esportato"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_wizard__import_file
+msgid "File to import"
+msgstr "File da importare"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "How to link the chart of accounts to the financial statements"
+msgstr "Come associare il piano dei conti alle voci del bilancio"
+
+#. module: l10n_it_financial_statement_eu
+#: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
+msgid "Import"
+msgstr "Importa"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_wizard__import_filename
+msgid "Import Filename"
+msgstr "Nome del file da importare"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_wizard__instructions
+#: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
+msgid "Instructions"
+msgstr "Istruzioni"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Line"
+msgstr "Voce"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Lines"
+msgstr "Voci"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.actions.act_window,name:l10n_it_financial_statement_eu.action_financial_statement_eu_mapping_wizard
+#: model:ir.ui.menu,name:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_menu
+msgid "Link accounts to Financial statement EU"
+msgstr "Associa i conti al Bilancio UE"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model,name:l10n_it_financial_statement_eu.model_financial_statement_eu_mapping_wizard
+msgid "Link of the accounts to the Financial statement EU"
+msgstr "Associazione dei conti al Bilancio UE"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_line__credit_id
+msgid "New credit line"
+msgstr "Nuova voce avere"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_line__debit_id
+msgid "New debit line"
+msgstr "Nuova voce dare"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_line__notes
+msgid "Notes"
+msgstr "Note"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_mapping_wizard__state__preview
+msgid "Preview"
+msgstr "Anteprima"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Reading XLSX files needs openpyxl."
+msgstr "Per leggere i file XLSX serve openpyxl."
+
+#. module: l10n_it_financial_statement_eu
+#: model_terms:ir.ui.view,arch_db:l10n_it_financial_statement_eu.financial_statement_eu_mapping_wizard_view
+msgid "Some rows have errors: correct them in the file and import it again."
+msgstr ""
+"Alcune righe hanno errori: correggerle nel file e importarlo di nuovo."
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields.selection,name:l10n_it_financial_statement_eu.selection__financial_statement_eu_mapping_wizard__state__start
+msgid "Start"
+msgstr "Inizio"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"The file has no column %(columns)s: the titles must stay as in the exported "
+"file."
+msgstr ""
+"Il file non ha la colonna %(columns)s: i titoli devono restare quelli del "
+"file esportato."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "The file has no sheet with the accounts."
+msgstr "Il file non ha un foglio con i conti."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"The file has three sheets. \"Lines\" lists the lines of the financial "
+"statements (art. 2424-2425 c.c.): only the lines with \"yes\" in the "
+"\"Assignable\" column can receive accounts, the others are totals or are "
+"computed. \"Accounts\" lists the accounts of the chart of accounts, with "
+"their movements from %(date_from)s to %(date_to)s and their current lines. "
+"Fill in the \"%(debit_line)s\" and \"%(credit_line)s\" columns of "
+"\"Accounts\" with the codes of the lines, then import the file with the same"
+" wizard: the changes are shown before they are applied."
+msgstr ""
+"Il file ha tre fogli. \"Voci\" elenca le voci del bilancio (artt. 2424-2425 "
+"c.c.): solo le voci con \"sì\" nella colonna \"Assegnabile\" possono "
+"ricevere conti, le altre sono totali o voci calcolate. \"Conti\" elenca i "
+"conti del piano dei conti, con i movimenti dal %(date_from)s al %(date_to)s "
+"e le voci attuali. Compilare le colonne \"%(debit_line)s\" e "
+"\"%(credit_line)s\" di \"Conti\" con i codici delle voci, poi importare il "
+"file con la stessa procedura guidata: le modifiche vengono mostrate prima di"
+" essere applicate."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "The file is neither an XLSX nor a CSV file."
+msgstr "Il file non è né un XLSX né un CSV."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid ""
+"The file to return is the same file, as XLSX, or a CSV file with the columns"
+" \"%(code)s\", \"%(debit_line)s\", \"%(credit_line)s\" and, if useful, "
+"\"%(notes)s\". Whoever fills it in, a person or an AI assistant, returns all"
+" the accounts and uses only the codes of the \"Lines\" sheet with \"yes\" in"
+" \"Assignable\"."
+msgstr ""
+"Il file da restituire è lo stesso file, in formato XLSX, oppure un file CSV "
+"con le colonne \"%(code)s\", \"%(debit_line)s\", \"%(credit_line)s\" e, se "
+"utile, \"%(notes)s\". Chi lo compila, una persona o un assistente AI, "
+"restituisce tutti i conti e usa solo i codici del foglio \"Voci\" con \"sì\""
+" in \"Assegnabile\"."
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "Type"
+msgstr "Tipo"
+
+#. module: l10n_it_financial_statement_eu
+#: model:ir.model.fields,field_description:l10n_it_financial_statement_eu.field_financial_statement_eu_mapping_line__wizard_id
+msgid "Wizard"
+msgstr "Procedura guidata"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "account repeated in the file"
+msgstr "conto ripetuto nel file"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "financial_statement_eu_mapping.xlsx"
+msgstr "associazione_bilancio_ue.xlsx"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "no"
+msgstr "no"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "the account has a balance and no line"
+msgstr "il conto ha un saldo e nessuna voce"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "unknown account"
+msgstr "conto sconosciuto"
+
+#. module: l10n_it_financial_statement_eu
+#. odoo-python
+#: code:addons/l10n_it_financial_statement_eu/wizard/financial_statement_eu_mapping_wizard.py:0
+msgid "yes"
+msgstr "sì"
