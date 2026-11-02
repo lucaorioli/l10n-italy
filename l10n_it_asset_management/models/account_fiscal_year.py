@@ -38,14 +38,18 @@ class AccountFiscalYear(models.Model):
         return domain
 
     @api.model
-    def _get_passed_years(self, start_date, end_date):
-        """Find all fiscal years between `start_date` and `end_date`."""
+    def _get_passed_years(self, start_date, end_date, company=None):
+        """Find all fiscal years between `start_date` and `end_date`
+        of `company`, or of the current company if not provided."""
         if start_date and end_date:
+            fiscal_year_values = {
+                "date_from": start_date,
+                "date_to": end_date,
+            }
+            if company:
+                fiscal_year_values["company_id"] = company.id
             overlapping_fiscal_year_domain = self.new(
-                {
-                    "date_from": start_date,
-                    "date_to": end_date,
-                }
+                fiscal_year_values
             )._get_overlapping_domain()
             overlapping_fiscal_years = self.search(overlapping_fiscal_year_domain)
             passed_years = len(overlapping_fiscal_years)
