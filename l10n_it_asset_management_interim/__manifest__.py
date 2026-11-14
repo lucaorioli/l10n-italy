@@ -3,7 +3,7 @@
 
 {
     "name": "ITA - Gestione Cespiti - Ammortamenti infrannuali",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "Localization/Italy",
     "summary": "Interim depreciation entries, reversed, without depreciation lines",
     "author": "Luca Orioli, Odoo Community Association (OCA)",

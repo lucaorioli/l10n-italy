@@ -3,7 +3,7 @@
 
 {
     "name": "ITA - Gestione Cespiti - Contabilità analitica",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "category": "Localization/Italy",
     "summary": "Analytic distribution on assets and their journal entries",
     "author": "Luca Orioli, Odoo Community Association (OCA)",
