@@ -546,7 +546,7 @@ class WizardAccountMoveManageAsset(models.TransientModel):
                 self.env._(
                     "Cannot dismiss asset `%(asset)s`: the selected move lines"
                     " have a negative amount (%(amount)s) on the asset account.",
-                    asset=self.l10n_it_asset_id.make_name(),
+                    asset=self.l10n_it_asset_id.display_name,
                     amount=writeoff,
                 )
             )
